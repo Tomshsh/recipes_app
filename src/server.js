@@ -15,15 +15,28 @@ app.get("/sanity", function (req, res) {
 
 app.get("/recipes/:ingredient", function (req, res) {
     let ingredient = req.params.ingredient
+    let info = {}
+    let specs = []
     request(`https://recipes-goodness.herokuapp.com/recipes/${ingredient}`, function (err, res, data) {
-        let info = JSON.parse(data)
-        
-        
+        info = JSON.parse(data)
+        info.results.forEach(x => {
+            let temp = {
+                ingredient: x.ingredients,
+                title: x.title,
+                thumbnail: x.thumbnail,
+                href: x.href
+            }
+            specs.push(temp)
+        })
+
     })
-    res.send()
-    // console.log(title)
-    debugger
+
+    res.send(specs)
+
 })
+// console.log(title)
+debugger
+
 app.listen(port, function () {
     console.log(`listening on port ${port}`)
 })
